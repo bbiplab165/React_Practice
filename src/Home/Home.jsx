@@ -1,69 +1,94 @@
 import { useState } from "react";
 import Style from "./Home.module.css";
-import Modal from '@mui/material/Modal';
-import Box from '@mui/material/Box';
-
-const style = {
-    position: 'absolute',
-    top: '50%',
-    left: '50%',
-    transform: 'translate(-50%, -50%)',
-    width: 400,
-    bgcolor: 'background.paper',
-    boxShadow: 24,
-    p: 4,
-    borderRadius: '10px', // Fix the typo here
-};
 
 function Home() {
-    const [user, setUser] = useState([]);
-    const [name, setName] = useState('');
-    const [age, setAge] = useState('');
-    const [modalOpen, setModalOpen] = useState(false);
+    const [id, setID] = useState('');
+    const [price, setPrice] = useState('');
+    const [disk, setDisk] = useState('');
+    const [table, setTable] = useState('');
+    const [table1, setTable1] = useState([]);
+    const [table2, setTable2] = useState([]);
+    const [table3, setTable3] = useState([]);
 
-    function addUser() {
-        console.log(name, age);
-        if (name.trim().length === 0 || age.trim().length === 0) {
-            setModalOpen(true);
-            return;
+    function handleSubmit() {
+        console.log(id, price, disk, table);
+    
+        const data = { id, price, disk, table };
+    
+        if (table === "Table 1") {
+            const storageData = JSON.parse(localStorage.getItem("Table 1")) || [];
+            setTable1((previousData) => [...previousData, data]);
+            localStorage.setItem("Table 1", JSON.stringify([...storageData, data]));
+        } else if (table === "Table 2") {
+            const storageData = JSON.parse(localStorage.getItem("Table 2")) || [];
+            setTable2((previousData) => [...previousData, data]);
+            localStorage.setItem("Table 2", JSON.stringify([...storageData, data]));
+        } else if (table === "Table 3") {
+            const storageData = JSON.parse(localStorage.getItem("Table 3")) || [];
+            setTable3((previousData) => [...previousData, data]);
+            localStorage.setItem("Table 3", JSON.stringify([...storageData, data]));
+        } else {
+            alert("Please select a table");
         }
-        const userDetail = { name, age };
-        setUser([...user, userDetail]);
-        setName('');
-        setAge('');
     }
+    
 
-    const closeModal = () => {
-        setModalOpen(false);
-    }
 
     return (
         <div className={Style.main}>
             <div className={Style.inputFild}>
-                <label>User Name</label>
-                <input type="text" value={name} onChange={(e) => setName(e.target.value)} />
-                <label>Age (Years)</label>
-                <input type="text" value={age} onChange={(e) => setAge(e.target.value)} />
-                <button onClick={addUser}>Add User</button>
+                <div>
+                    <label>Order I.D. </label>
+                    <input type="text" onChange={(e) => setID(e.target.value)} />
+                </div>
+                <div>
+                    <label>Choose Price</label>
+                    <input type="number" onChange={(e) => setPrice(e.target.value)} />
+                </div>
+                <div>
+                    <label>Choose Disk</label>
+                    <input type="text" onChange={(e) => setDisk(e.target.value)} />
+                </div>
+                <div>
+                    <label>Choose a Table</label>
+                    <select onChange={(e) => setTable(e.target.value)}>
+                        <option>Select Table</option>
+                        <option>Table 1</option>
+                        <option>Table 2</option>
+                        <option>Table 3</option>
+                    </select>
+                </div>
+                <button onClick={handleSubmit}>Add to bill</button>
             </div>
-            {
-                user.length > 0 ? (
-                    <div className={Style.display}>
-                        {user.map((i, index) => (
-                            <div key={index} >
-                                <p>{i.name} ({i.age} years Old)</p>
-                            </div>
-                        ))}
+            <div className={Style.map}>
+                <h3>Table 1</h3>
+                {table1.length > 0 ? (table1.map((i) => (
+                    <div key={i.id} className={Style.items}>
+                        <h4>{i.id}</h4>
+                        <h4>{i.price}</h4>
+                        <h4>{i.disk}</h4>
+                        <h4>{i.table}</h4>
                     </div>
-                ) : ('')
-            }
-
-            <Modal open={modalOpen} onClose={closeModal}>
-                <Box sx={style}>
-                    <h2>Please provide a valid name</h2>
-                    <button onClick={closeModal}>Close</button>
-                </Box>
-            </Modal>
+                ))) : ('')}
+                <h3>Table 2</h3>
+                {table2.length > 0 ? (table2.map((i) => (
+                    <div key={i.id} className={Style.items}>
+                        <h4>{i.id}</h4>
+                        <h4>{i.price}</h4>
+                        <h4>{i.disk}</h4>
+                        <h4>{i.table}</h4>
+                    </div>
+                ))) : ('')}
+                <h3>Table 3</h3>
+                {table3.length > 0 ? (table3.map((i) => (
+                    <div key={i.id} className={Style.items}>
+                        <h4>{i.id}</h4>
+                        <h4>{i.price}</h4>
+                        <h4>{i.disk}</h4>
+                        <h4>{i.table}</h4>
+                    </div>
+                ))) : ('')}
+            </div>
         </div>
     )
 }
